@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuwait Travel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0fdf4;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: #064e3b;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand .icon { font-size: 22px; }
+        .nav-links a {
+            color: #a7f3d0;
+            text-decoration: none;
+            font-size: 14px;
+            margin-left: 20px;
+        }
+        .nav-links a:hover { color: #fff; }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #064e3b, #065f46, #047857);
+            padding: 56px 24px;
+            text-align: center;
+            color: #fff;
+        }
+        .hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+        .hero p { color: #a7f3d0; font-size: 16px; max-width: 500px; margin: 0 auto 28px; }
+
+        /* ── Search bar ── */
+        .search-bar {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.15);
+        }
+        .search-bar .field {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 16px;
+        }
+        .search-bar .field label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .search-bar .field select,
+        .search-bar .field input {
+            width: 100%;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            background: transparent;
+            outline: none;
+        }
+        .search-btn {
+            padding: 12px 28px;
+            background: #059669;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            align-self: center;
+            margin: 4px;
+        }
+        .search-btn:hover { background: #047857; }
+
+        /* ── Trips ── */
+        .section-title {
+            max-width: 900px;
+            margin: 40px auto 20px;
+            padding: 0 24px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .trips {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+        .trip-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #d1fae5;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .trip-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.08);
+        }
+        .trip-img {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            position: relative;
+        }
+        .trip-img .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,.9);
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #064e3b;
+        }
+        .trip-info { padding: 16px; }
+        .trip-route {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .trip-route .arrow { color: #059669; }
+        .trip-details {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .trip-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .trip-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #064e3b;
+        }
+        .trip-price small { font-size: 12px; color: #64748b; font-weight: 500; }
+        .book-btn {
+            padding: 10px 20px;
+            background: #059669;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .book-btn:hover { background: #047857; }
+
+        /* ── Booking Modal ── */
+        .booking-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s;
+        }
+        .booking-overlay.open { opacity: 1; pointer-events: auto; }
+        .booking-modal {
+            background: #fff;
+            border-radius: 20px;
+            width: 420px;
+            max-width: 90vw;
+            padding: 28px;
+            transform: translateY(20px);
+            transition: transform .3s;
+        }
+        .booking-overlay.open .booking-modal { transform: translateY(0); }
+        .booking-modal h2 { font-size: 20px; margin-bottom: 4px; }
+        .booking-modal .route { color: #059669; font-size: 14px; margin-bottom: 20px; }
+        .booking-modal .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .booking-modal .form-group { flex: 1; }
+        .booking-modal label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .booking-modal input, .booking-modal select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .booking-modal input:focus, .booking-modal select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .booking-summary {
+            background: #f0fdf4;
+            border-radius: 10px;
+            padding: 14px;
+            margin: 16px 0;
+        }
+        .booking-summary .line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .booking-summary .total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 700;
+            border-top: 1px solid #d1fae5;
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .booking-actions .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .booking-actions .pay-btn {
+            flex: 2;
+            padding: 12px;
+            background: linear-gradient(135deg, #FF8C00, #F5A623);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .booking-actions .pay-btn:hover { opacity: .9; }
+
+        /* ── Result ── */
+        .result-banner {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            padding: 0 24px;
+            display: none;
+        }
+        .result-banner .inner {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .result-banner.success .inner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        .result-banner.success { display: block; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="nav-brand"><span class="icon">&#9992;&#65039;</span> Kuwait Travel</a>
+        <div class="nav-links">
+            <a href="#">Flights</a>
+            <a href="#">Hotels</a>
+            <a href="#">Packages</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Explore the World</h1>
+        <p>Book flights and travel packages from Kuwait. Pay instantly with your Zam Card.</p>
+        <div class="search-bar">
+            <div class="field">
+                <label>From</label>
+                <select>
+                    <option>Kuwait (KWI)</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>To</label>
+                <select>
+                    <option>Dubai (DXB)</option>
+                    <option>Istanbul (IST)</option>
+                    <option>London (LHR)</option>
+                    <option>Bangkok (BKK)</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Date</label>
+                <input type="date" />
+            </div>
+            <button class="search-btn">Search</button>
+        </div>
+    </div>
+
+    <h2 class="section-title">Popular Trips</h2>
+    <div id="result" class="result-banner"></div>
+    <div class="trips" id="trips-grid"></div>
+
+    <!-- Booking modal -->
+    <div class="booking-overlay" id="booking-overlay" onclick="if(event.target===this)closeBooking()">
+        <div class="booking-modal" id="booking-modal"></div>
+    </div>
+
+    <a href="../index.html" class="back-link">&larr; Back to all stores</a>
+
+    <script src="../zam-checkout.js"></script>
+    <script>
+        // ── Kuwait Travel API Configuration ──
+        var STORE_CONFIG = {
+            apiKey:     'GsYr7i0VAibf9A3FtI6n64xm5YD74iRR8WhfY9Vppgyf3fZlvifRFymV5VNMSf2c',  // Set your Kuwait Travel merchant API key here
+            baseURL:    'https://zam.techween.net',  // Set your Zam API base URL here (e.g. https://zam-api.example.com)
+            callbackURL:'',  // Set your server-side webhook URL here (e.g. https://travel.example.com/zam/callback)
+        };
+
+        var TRIPS = [
+            { id: 1, from: 'KWI', to: 'DXB', dest: 'Dubai', airline: 'Kuwait Airways', duration: '1h 30m', date: 'Daily flights', price: 45.000, icon: '&#127963;&#65039;', bg: '#e0f2fe', type: 'Flight' },
+            { id: 2, from: 'KWI', to: 'IST', dest: 'Istanbul', airline: 'Turkish Airlines', duration: '4h 15m', date: 'Daily flights', price: 125.000, icon: '&#128332;', bg: '#fef3c7', type: 'Flight' },
+            { id: 3, from: 'KWI', to: 'LHR', dest: 'London', airline: 'British Airways', duration: '6h 45m', date: 'Daily flights', price: 245.000, icon: '&#127748;', bg: '#e0e7ff', type: 'Flight' },
+            { id: 4, from: 'KWI', to: 'BKK', dest: 'Bangkok', airline: 'Thai Airways', duration: '7h 30m', date: 'Daily flights', price: 195.000, icon: '&#127855;', bg: '#fce7f3', type: 'Flight' },
+            { id: 5, from: 'KWI', to: 'CAI', dest: 'Cairo', airline: 'Jazeera Airways', duration: '2h 50m', date: 'Daily flights', price: 65.000, icon: '&#127963;&#65039;', bg: '#fef9c3', type: 'Flight' },
+            { id: 6, from: 'KWI', to: 'MLE', dest: 'Maldives', airline: 'Package Deal', duration: '5 Nights', date: 'All inclusive', price: 450.000, icon: '&#127965;&#65039;', bg: '#ccfbf1', type: 'Package' },
+        ];
+
+        function renderTrips() {
+            var grid = document.getElementById('trips-grid');
+            grid.innerHTML = TRIPS.map(function(t) {
+                return '<div class="trip-card">' +
+                    '<div class="trip-img" style="background:' + t.bg + '">' + t.icon +
+                    '<span class="badge">' + t.type + '</span></div>' +
+                    '<div class="trip-info">' +
+                    '<div class="trip-route">' + t.from + ' <span class="arrow">&rarr;</span> ' + t.to + ' &middot; ' + t.dest + '</div>' +
+                    '<div class="trip-details">' + t.airline + ' &middot; ' + t.duration + ' &middot; ' + t.date + '</div>' +
+                    '<div class="trip-bottom">' +
+                    '<div class="trip-price">' + t.price.toFixed(3) + ' <small>KWD</small></div>' +
+                    '<button class="book-btn" onclick="openBooking(' + t.id + ')">Book Now</button>' +
+                    '</div></div></div>';
+            }).join('');
+        }
+
+        var currentTrip = null;
+
+        function openBooking(id) {
+            currentTrip = TRIPS.find(function(t) { return t.id === id; });
+            if (!currentTrip) return;
+
+            var modal = document.getElementById('booking-modal');
+            modal.innerHTML =
+                '<h2>Book Your Trip</h2>' +
+                '<div class="route">' + currentTrip.from + ' &rarr; ' + currentTrip.dest + ' &middot; ' + currentTrip.airline + '</div>' +
+                '<div class="form-row">' +
+                '<div class="form-group"><label>Passengers</label>' +
+                '<select id="pax" onchange="updateSummary()"><option value="1">1 Adult</option><option value="2">2 Adults</option><option value="3">3 Adults</option><option value="4">4 Adults</option></select></div>' +
+                '<div class="form-group"><label>Class</label>' +
+                '<select id="class" onchange="updateSummary()"><option value="1">Economy</option><option value="1.5">Business</option><option value="2.5">First</option></select></div></div>' +
+                '<div class="form-row"><div class="form-group"><label>Passenger Name</label><input type="text" placeholder="Full name as on passport" /></div></div>' +
+                '<div class="booking-summary" id="booking-summary"></div>' +
+                '<div class="booking-actions">' +
+                '<button class="cancel-btn" onclick="closeBooking()">Cancel</button>' +
+                '<button class="pay-btn" id="pay-trip-btn" onclick="payTrip()">' +
+                '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>' +
+                'Pay with Zam</button></div>';
+
+            updateSummary();
+            document.getElementById('booking-overlay').classList.add('open');
+        }
+
+        function updateSummary() {
+            if (!currentTrip) return;
+            var pax = parseInt(document.getElementById('pax').value);
+            var multiplier = parseFloat(document.getElementById('class').value);
+            var ticketPrice = currentTrip.price * multiplier;
+            var total = ticketPrice * pax;
+
+            var summary = document.getElementById('booking-summary');
+            summary.innerHTML =
+                '<div class="line"><span>Ticket (' + currentTrip.from + ' &rarr; ' + currentTrip.to + ')</span><span>' + ticketPrice.toFixed(3) + ' KWD</span></div>' +
+                '<div class="line"><span>Passengers</span><span>&times;' + pax + '</span></div>' +
+                '<div class="total"><span>Total</span><span>' + total.toFixed(3) + ' KWD</span></div>';
+        }
+
+        function closeBooking() {
+            document.getElementById('booking-overlay').classList.remove('open');
+            currentTrip = null;
+        }
+
+        function getBookingTotal() {
+            var pax = parseInt(document.getElementById('pax').value);
+            var multiplier = parseFloat(document.getElementById('class').value);
+            return currentTrip.price * multiplier * pax;
+        }
+
+        function payTrip() {
+            var baseURL = STORE_CONFIG.baseURL || localStorage.getItem('zam_demo_url');
+            var apiKey = STORE_CONFIG.apiKey || localStorage.getItem('zam_demo_key');
+            if (!apiKey) { alert('Please set the Kuwait Travel API key in STORE_CONFIG or on the main demo page.'); return; }
+
+            var total = getBookingTotal();
+            var orderRef = 'KWT-' + Date.now();
+
+            ZamCheckout.configure({ apiKey: apiKey, baseURL: baseURL });
+
+            var btn = document.getElementById('pay-trip-btn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            ZamCheckout.open({
+                amount: total.toFixed(3),
+                orderRef: orderRef,
+                callbackURL: STORE_CONFIG.callbackURL || undefined,
+                note: 'Kuwait Travel: ' + currentTrip.from + ' to ' + currentTrip.dest,
+                onSuccess: function(result) {
+                    btn.disabled = false;
+                    closeBooking();
+                    var banner = document.getElementById('result');
+                    banner.className = 'result-banner success';
+                    banner.innerHTML = '<div class="inner"><strong>Booking Confirmed!</strong> Your trip to ' + currentTrip.dest + ' (Ref: ' + orderRef + ') has been booked and paid.</div>';
+                },
+                onCancel: function() {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                },
+                onError: function(err) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    alert('Payment error: ' + (err.error || 'Something went wrong'));
+                }
+            });
+        }
+
+        renderTrips();
+    </script>
+</body>
+</html>

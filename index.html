@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zam Demo Stores</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
+        .header {
+            text-align: center;
+            padding: 60px 24px 20px;
+        }
+        .header-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .header-logo svg { width: 48px; height: 32px; }
+        .header-logo span {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF8C00, #F5A623);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: #888;
+            font-size: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── Grid ── */
+        .stores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 1100px;
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        /* ── Store Card ── */
+        .store-card {
+            position: relative;
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform .25s, border-color .25s, box-shadow .25s;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+        }
+        .store-card:hover {
+            transform: translateY(-6px);
+            border-color: #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,.5);
+        }
+
+        .store-banner {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .store-banner .banner-icon {
+            font-size: 72px;
+            z-index: 1;
+        }
+        .store-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            opacity: 0.15;
+        }
+
+        .store-banner.xcite {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+        .store-banner.xcite::after {
+            background: linear-gradient(135deg, #0066ff, #00d4ff);
+        }
+        .store-banner.travel {
+            background: linear-gradient(135deg, #1a2e1a, #162e16);
+        }
+        .store-banner.travel::after {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+        }
+        .store-banner.talabat {
+            background: linear-gradient(135deg, #2e1a2e, #2e1636);
+        }
+        .store-banner.talabat::after {
+            background: linear-gradient(135deg, #e17055, #fdcb6e);
+        }
+
+        .store-body {
+            padding: 24px;
+        }
+        .store-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .store-desc {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .store-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #F5A623;
+            transition: gap .2s;
+        }
+        .store-card:hover .store-cta { gap: 12px; }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 40px 24px 48px;
+            color: #444;
+            font-size: 13px;
+        }
+        .footer a {
+            color: #F5A623;
+            text-decoration: none;
+        }
+
+        /* ── Config bar ── */
+        .config-bar {
+            max-width: 1100px;
+            margin: 0 auto 0;
+            padding: 0 24px;
+        }
+        .config-inner {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: end;
+        }
+        .config-inner .field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .config-inner label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 6px;
+        }
+        .config-inner input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            font-family: monospace;
+        }
+        .config-inner input:focus {
+            outline: none;
+            border-color: #F5A623;
+        }
+        .config-inner .save-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FF8C00, #F5A623);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .config-inner .save-btn:hover { opacity: .9; }
+
+        @media (max-width: 700px) {
+            .stores-grid { grid-template-columns: 1fr; }
+            .header { padding-top: 40px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="6" y1="36" x2="18" y2="4" stroke="#F5A623" stroke-width="6" stroke-linecap="round"/>
+                <line x1="16" y1="36" x2="28" y2="4" stroke="#F5A623" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <span>Zam Demo</span>
+        </div>
+        <p>Explore demo online stores powered by Zam Checkout. Tap a card to pay using your Zam Card.</p>
+    </header>
+
+    <div class="config-bar">
+        <div class="config-inner">
+            <div class="field">
+                <label>API Base URL</label>
+                <input id="cfg-url" type="text" placeholder="https://zam.example.com" />
+            </div>
+            <div class="field">
+                <label>Merchant API Key</label>
+                <input id="cfg-key" type="text" placeholder="Paste your merchant API key" />
+            </div>
+            <button class="save-btn" onclick="saveConfig()">Save</button>
+        </div>
+    </div>
+
+    <div class="stores-grid">
+        <a class="store-card" href="xcite/index.html">
+            <div class="store-banner xcite">
+                <span class="banner-icon">&#128268;</span>
+            </div>
+            <div class="store-body">
+                <div class="store-name">Xcite Electronics</div>
+                <div class="store-desc">Latest smartphones, laptops, gaming gear and accessories at the best prices in Kuwait.</div>
+                <div class="store-cta">Shop Now <span>&rarr;</span></div>
+            </div>
+        </a>
+
+        <a class="store-card" href="travel/index.html">
+            <div class="store-banner travel">
+                <span class="banner-icon">&#9992;&#65039;</span>
+            </div>
+            <div class="store-body">
+                <div class="store-name">Kuwait Travel</div>
+                <div class="store-desc">Book flights, hotels, and holiday packages. Your next adventure starts here.</div>
+                <div class="store-cta">Browse Trips <span>&rarr;</span></div>
+            </div>
+        </a>
+
+        <a class="store-card" href="talabat/index.html">
+            <div class="store-banner talabat">
+                <span class="banner-icon">&#129367;</span>
+            </div>
+            <div class="store-body">
+                <div class="store-name">Talabat</div>
+                <div class="store-desc">Fresh, light, and healthy meals delivered to your door. Fuel your day the right way.</div>
+                <div class="store-cta">Order Now <span>&rarr;</span></div>
+            </div>
+        </a>
+    </div>
+
+    <footer class="footer">
+        Payments powered by <a href="#">Zam</a> &middot; Demo stores for testing purposes only
+    </footer>
+
+    <script>
+        (function() {
+            var savedURL = localStorage.getItem('zam_demo_url');
+            var savedKey = localStorage.getItem('zam_demo_key');
+            if (savedURL) document.getElementById('cfg-url').value = savedURL;
+            if (savedKey) document.getElementById('cfg-key').value = savedKey;
+        })();
+
+        function saveConfig() {
+            var url = document.getElementById('cfg-url').value.trim();
+            var key = document.getElementById('cfg-key').value.trim();
+            if (url) localStorage.setItem('zam_demo_url', url);
+            if (key) localStorage.setItem('zam_demo_key', key);
+            alert('Settings saved! They will be used across all demo stores.');
+        }
+    </script>
+</body>
+</html>

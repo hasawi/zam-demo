@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talabat - Healthy Meals</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fefce8;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: #fff;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #fde68a;
+        }
+        .nav-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #b45309;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: #92400e;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: #b45309; }
+        .cart-count {
+            background: #f59e0b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 100px;
+            margin-left: 4px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 48px 24px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+        .hero p {
+            color: #b45309;
+            font-size: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ── Menu Tabs ── */
+        .menu-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            padding: 20px 24px 0;
+            flex-wrap: wrap;
+        }
+        .menu-tab {
+            padding: 8px 18px;
+            background: #fff;
+            border: 1px solid #fde68a;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #92400e;
+            transition: all .15s;
+        }
+        .menu-tab:hover, .menu-tab.active {
+            background: #f59e0b;
+            color: #fff;
+            border-color: #f59e0b;
+        }
+
+        /* ── Menu Grid ── */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 960px;
+            margin: 24px auto;
+            padding: 0 24px;
+        }
+        .meal-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #fde68a;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .meal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(180,83,9,.08);
+        }
+        .meal-img {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            background: #fffbeb;
+        }
+        .meal-info { padding: 16px; }
+        .meal-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+        .meal-desc { font-size: 12px; color: #92400e; line-height: 1.4; margin-bottom: 4px; }
+        .meal-macros {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .macro {
+            font-size: 11px;
+            color: #b45309;
+            background: #fef3c7;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .meal-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .meal-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #92400e;
+        }
+        .meal-price small { font-size: 12px; color: #b45309; font-weight: 500; }
+        .add-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #f59e0b;
+            color: #fff;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s;
+        }
+        .add-btn:hover { background: #d97706; }
+
+        /* ── Order bar ── */
+        .order-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid #fde68a;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform .3s;
+        }
+        .order-bar.visible { transform: translateY(0); }
+        .order-info {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .order-info .amount {
+            color: #92400e;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .order-items-summary {
+            font-size: 12px;
+            color: #b45309;
+        }
+        .order-pay-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #FF8C00, #F5A623);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .order-pay-btn:hover { opacity: .9; }
+        .order-pay-btn:disabled { opacity: .5; cursor: default; }
+        .order-clear {
+            background: none;
+            border: none;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* ── Result ── */
+        .result-banner {
+            max-width: 960px;
+            margin: 0 auto 20px;
+            padding: 0 24px;
+            display: none;
+        }
+        .result-banner .inner {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .result-banner.success .inner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        .result-banner.success { display: block; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px 80px;
+            color: #92400e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="nav-brand">Talabat</a>
+        <div class="nav-links">
+            <a href="#">Menu</a>
+            <a href="#">Plans</a>
+            <a href="#" id="cart-link">Order <span class="cart-count" id="cart-count">0</span></a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Eat Light. Feel Right.</h1>
+        <p>Fresh healthy meals crafted daily. Order now, pay with Zam.</p>
+    </div>
+
+    <div class="menu-tabs">
+        <span class="menu-tab active">All</span>
+        <span class="menu-tab">Bowls</span>
+        <span class="menu-tab">Salads</span>
+        <span class="menu-tab">Wraps</span>
+        <span class="menu-tab">Smoothies</span>
+        <span class="menu-tab">Snacks</span>
+    </div>
+
+    <div id="result" class="result-banner"></div>
+    <div class="menu-grid" id="menu-grid"></div>
+
+    <!-- Order bar -->
+    <div class="order-bar" id="order-bar">
+        <div>
+            <div class="order-info">Total: <span class="amount" id="order-total">0.000 KWD</span></div>
+            <div class="order-items-summary" id="order-summary">0 items</div>
+        </div>
+        <button class="order-pay-btn" id="order-pay-btn" onclick="checkout()">
+            <svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>
+            Pay with Zam
+        </button>
+        <button class="order-clear" onclick="clearOrder()">Clear</button>
+    </div>
+
+    <a href="../index.html" class="back-link">&larr; Back to all stores</a>
+
+    <script src="../zam-checkout.js"></script>
+    <script>
+        // ── Talabat Healthy Meals API Configuration ──
+        var STORE_CONFIG = {
+            apiKey:     'TIuXi9MFznAMxarLRo415HfFiax2JP6eLH2a_T7848pRYJ6fa09i7Btj7vLwPEBX',  // Set your Pick merchant API key here
+            baseURL:    'https://zam.techween.net',  // Set your Zam API base URL here (e.g. https://zam-api.example.com)
+            callbackURL:'',  // Set your server-side webhook URL here (e.g. https://pick.example.com/zam/callback)
+        };
+
+        var MEALS = [
+            { id: 1, name: 'Grilled Chicken Bowl', desc: 'Brown rice, grilled chicken, avocado, edamame, sesame dressing', price: 3.250, icon: '&#127857;', cal: 480, protein: '38g', cat: 'Bowls' },
+            { id: 2, name: 'Salmon Poke Bowl', desc: 'Sushi rice, fresh salmon, mango, cucumber, spicy mayo', price: 4.500, icon: '&#127843;', cal: 520, protein: '32g', cat: 'Bowls' },
+            { id: 3, name: 'Mediterranean Salad', desc: 'Mixed greens, feta, olives, cherry tomatoes, lemon vinaigrette', price: 2.500, icon: '&#129367;', cal: 320, protein: '12g', cat: 'Salads' },
+            { id: 4, name: 'Quinoa Power Salad', desc: 'Quinoa, roasted vegetables, chickpeas, tahini dressing', price: 2.750, icon: '&#129367;', cal: 380, protein: '16g', cat: 'Salads' },
+            { id: 5, name: 'Turkey Avocado Wrap', desc: 'Whole wheat wrap, turkey, avocado, spinach, mustard', price: 2.250, icon: '&#127790;', cal: 410, protein: '28g', cat: 'Wraps' },
+            { id: 6, name: 'Falafel Wrap', desc: 'Crispy falafel, hummus, pickled turnips, fresh veggies', price: 1.750, icon: '&#129385;', cal: 390, protein: '14g', cat: 'Wraps' },
+            { id: 7, name: 'Green Detox Smoothie', desc: 'Spinach, banana, ginger, chia seeds, coconut water', price: 1.500, icon: '&#129361;', cal: 180, protein: '6g', cat: 'Smoothies' },
+            { id: 8, name: 'Berry Protein Shake', desc: 'Mixed berries, protein powder, almond milk, honey', price: 1.750, icon: '&#129382;', cal: 240, protein: '22g', cat: 'Smoothies' },
+            { id: 9, name: 'Energy Bites (6 pcs)', desc: 'Oats, peanut butter, dark chocolate, honey', price: 1.250, icon: '&#127850;', cal: 280, protein: '10g', cat: 'Snacks' },
+            { id: 10, name: 'Protein Bar', desc: 'Whey protein, almonds, dark chocolate coating', price: 0.950, icon: '&#127851;', cal: 220, protein: '20g', cat: 'Snacks' },
+            { id: 11, name: 'Acai Bowl', desc: 'Acai blend, granola, banana, strawberries, coconut flakes', price: 3.500, icon: '&#127815;', cal: 350, protein: '8g', cat: 'Bowls' },
+            { id: 12, name: 'Caesar Chicken Salad', desc: 'Romaine, grilled chicken, parmesan, croutons, caesar dressing', price: 2.750, icon: '&#129367;', cal: 420, protein: '34g', cat: 'Salads' },
+        ];
+
+        var order = [];
+        var activeCat = 'All';
+
+        function renderMenu() {
+            var grid = document.getElementById('menu-grid');
+            var filtered = activeCat === 'All' ? MEALS : MEALS.filter(function(m) { return m.cat === activeCat; });
+            grid.innerHTML = filtered.map(function(m) {
+                return '<div class="meal-card">' +
+                    '<div class="meal-img">' + m.icon + '</div>' +
+                    '<div class="meal-info">' +
+                    '<div class="meal-name">' + m.name + '</div>' +
+                    '<div class="meal-desc">' + m.desc + '</div>' +
+                    '<div class="meal-macros">' +
+                    '<span class="macro">' + m.cal + ' cal</span>' +
+                    '<span class="macro">' + m.protein + ' protein</span>' +
+                    '</div>' +
+                    '<div class="meal-bottom">' +
+                    '<div class="meal-price">' + m.price.toFixed(3) + ' <small>KWD</small></div>' +
+                    '<button class="add-btn" onclick="addToOrder(' + m.id + ')">+</button>' +
+                    '</div></div></div>';
+            }).join('');
+        }
+
+        document.querySelector('.menu-tabs').addEventListener('click', function(e) {
+            if (e.target.classList.contains('menu-tab')) {
+                document.querySelectorAll('.menu-tab').forEach(function(t) { t.classList.remove('active'); });
+                e.target.classList.add('active');
+                activeCat = e.target.textContent;
+                renderMenu();
+            }
+        });
+
+        function addToOrder(id) {
+            var meal = MEALS.find(function(m) { return m.id === id; });
+            if (!meal) return;
+            var existing = order.find(function(o) { return o.id === id; });
+            if (existing) { existing.qty++; } else { order.push({ id: id, name: meal.name, price: meal.price, qty: 1 }); }
+            updateOrderBar();
+        }
+
+        function clearOrder() {
+            order = [];
+            updateOrderBar();
+        }
+
+        function getOrderTotal() {
+            return order.reduce(function(s, o) { return s + o.price * o.qty; }, 0);
+        }
+
+        function updateOrderBar() {
+            var totalItems = order.reduce(function(s, o) { return s + o.qty; }, 0);
+            var total = getOrderTotal();
+
+            document.getElementById('cart-count').textContent = totalItems;
+            document.getElementById('order-total').textContent = total.toFixed(3) + ' KWD';
+            document.getElementById('order-summary').textContent = totalItems + ' item' + (totalItems !== 1 ? 's' : '');
+
+            var bar = document.getElementById('order-bar');
+            if (totalItems > 0) { bar.classList.add('visible'); } else { bar.classList.remove('visible'); }
+        }
+
+        function checkout() {
+            var baseURL = STORE_CONFIG.baseURL || localStorage.getItem('zam_demo_url');
+            var apiKey = STORE_CONFIG.apiKey || localStorage.getItem('zam_demo_key');
+            if (!apiKey) { alert('Please set the Talabat API key in STORE_CONFIG or on the main demo page.'); return; }
+
+            var total = getOrderTotal();
+            if (total <= 0) return;
+
+            ZamCheckout.configure({ apiKey: apiKey, baseURL: baseURL });
+
+            var orderRef = 'TALABAT-' + Date.now();
+            var itemNames = order.map(function(o) { return o.name + (o.qty > 1 ? ' x' + o.qty : ''); }).join(', ');
+
+            var btn = document.getElementById('order-pay-btn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            ZamCheckout.open({
+                amount: total.toFixed(3),
+                orderRef: orderRef,
+                callbackURL: STORE_CONFIG.callbackURL || undefined,
+                note: 'Talabat: ' + itemNames,
+                onSuccess: function(result) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    order = [];
+                    updateOrderBar();
+                    var banner = document.getElementById('result');
+                    banner.className = 'result-banner success';
+                    banner.innerHTML = '<div class="inner"><strong>Order Placed!</strong> Your healthy meal order ' + orderRef + ' is being prepared. Enjoy!</div>';
+                    banner.scrollIntoView({ behavior: 'smooth' });
+                },
+                onCancel: function() {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                },
+                onError: function(err) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    alert('Payment error: ' + (err.error || 'Something went wrong'));
+                }
+            });
+        }
+
+        renderMenu();
+    </script>
+</body>
+</html>

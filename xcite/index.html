@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xcite Electronics</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: #0a1628;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand .x { color: #3b82f6; }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color .15s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a.active { color: #3b82f6; }
+        .cart-badge {
+            position: relative;
+        }
+        .cart-badge::after {
+            content: attr(data-count);
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #0a1628, #1e3a5f);
+            padding: 48px 24px;
+            text-align: center;
+            color: #fff;
+        }
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .hero p { color: #94a3b8; font-size: 16px; }
+
+        /* ── Categories ── */
+        .categories {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 20px 24px;
+            flex-wrap: wrap;
+        }
+        .cat-pill {
+            padding: 8px 18px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .15s;
+            color: #475569;
+        }
+        .cat-pill:hover, .cat-pill.active {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+
+        /* ── Products Grid ── */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px 60px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.08);
+        }
+        .product-img {
+            height: 180px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        .product-info {
+            padding: 16px;
+        }
+        .product-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .product-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a1628;
+        }
+        .product-price small {
+            font-size: 12px;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+        .buy-btn {
+            padding: 8px 18px;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .buy-btn:hover { background: #2563eb; }
+
+        /* ── Cart Drawer ── */
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s;
+        }
+        .cart-overlay.open { opacity: 1; pointer-events: auto; }
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 380px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 201;
+            transform: translateX(100%);
+            transition: transform .3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-overlay.open .cart-drawer { transform: translateX(0); }
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cart-header h2 { font-size: 18px; font-weight: 700; }
+        .cart-close {
+            width: 32px; height: 32px; border: none; background: #f1f5f9;
+            border-radius: 8px; cursor: pointer; font-size: 16px;
+        }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .cart-item-icon { font-size: 32px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-size: 14px; font-weight: 600; }
+        .cart-item-price { font-size: 13px; color: #64748b; }
+        .cart-item-remove {
+            background: none; border: none; color: #ef4444;
+            cursor: pointer; font-size: 18px;
+        }
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #FF8C00, #F5A623);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity .15s;
+        }
+        .checkout-btn:hover { opacity: .9; }
+        .checkout-btn:disabled { opacity: .5; cursor: default; }
+        .cart-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .back-link:hover { color: #1a1a1a; }
+
+        /* ── Result ── */
+        .result-banner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: none;
+        }
+        .result-banner .inner {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .result-banner.success .inner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        .result-banner.success { display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="nav-brand"><span class="x">X</span>cite</a>
+        <div class="nav-links">
+            <a href="#" class="active">Products</a>
+            <a href="#" class="cart-badge" data-count="0" onclick="toggleCart(); return false;">Cart</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Top Electronics in Kuwait</h1>
+        <p>Shop the latest gadgets &mdash; pay instantly with your Zam Card</p>
+    </div>
+
+    <div class="categories">
+        <span class="cat-pill active">All</span>
+        <span class="cat-pill">Phones</span>
+        <span class="cat-pill">Laptops</span>
+        <span class="cat-pill">Audio</span>
+        <span class="cat-pill">Gaming</span>
+        <span class="cat-pill">Accessories</span>
+    </div>
+
+    <div id="result" class="result-banner"></div>
+
+    <div class="products" id="products-grid"></div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cart-overlay" onclick="if(event.target===this)toggleCart()">
+        <div class="cart-drawer">
+            <div class="cart-header">
+                <h2>Your Cart</h2>
+                <button class="cart-close" onclick="toggleCart()">&times;</button>
+            </div>
+            <div class="cart-items" id="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span id="cart-total">0.000 KWD</span>
+                </div>
+                <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>
+                    <svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>
+                    Pay with Zam
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html" class="back-link">&larr; Back to all stores</a>
+
+    <script src="../zam-checkout.js"></script>
+    <script>
+        // ── Xcite Electronics API Configuration ──
+        var STORE_CONFIG = {
+            apiKey:     'yv_xBmsUUq0wB9hskH1dAKYA_vbcV3HLXNo_LdO1Edy9Nf0s2js6_Bqt3SwD-BQ9',  // Set your Xcite merchant API key here
+            baseURL:    'https://zam.techween.net',  // Set your Zam API base URL here (e.g. https://zam-api.example.com)
+            callbackURL:'',  // Set your server-side webhook URL here (e.g. https://xcite.example.com/zam/callback)
+        };
+
+        var PRODUCTS = [
+            { id: 1, name: 'iPhone 16 Pro Max', desc: '256GB, Natural Titanium', price: 449.900, icon: '&#128241;', cat: 'Phones' },
+            { id: 2, name: 'Samsung Galaxy S25 Ultra', desc: '512GB, Titanium Black', price: 399.900, icon: '&#128242;', cat: 'Phones' },
+            { id: 3, name: 'MacBook Pro 14"', desc: 'M4 Pro, 18GB, 512GB SSD', price: 599.900, icon: '&#128187;', cat: 'Laptops' },
+            { id: 4, name: 'Dell XPS 15', desc: 'Intel i7, 16GB, 1TB SSD', price: 449.900, icon: '&#128187;', cat: 'Laptops' },
+            { id: 5, name: 'AirPods Pro 2', desc: 'USB-C, Active Noise Cancelling', price: 89.900, icon: '&#127911;', cat: 'Audio' },
+            { id: 6, name: 'Sony WH-1000XM5', desc: 'Wireless Noise Cancelling', price: 119.900, icon: '&#127911;', cat: 'Audio' },
+            { id: 7, name: 'PS5 Slim', desc: 'Digital Edition, 1TB', price: 149.900, icon: '&#127918;', cat: 'Gaming' },
+            { id: 8, name: 'Nintendo Switch OLED', desc: 'White Joy-Con', price: 119.900, icon: '&#127918;', cat: 'Gaming' },
+            { id: 9, name: 'Apple Watch Ultra 2', desc: '49mm, Titanium', price: 299.900, icon: '&#8986;', cat: 'Accessories' },
+            { id: 10, name: 'MagSafe Charger', desc: 'Fast wireless charging', price: 14.900, icon: '&#128268;', cat: 'Accessories' },
+            { id: 11, name: 'iPad Air M2', desc: '11-inch, 128GB, Space Gray', price: 229.900, icon: '&#128193;', cat: 'Laptops' },
+            { id: 12, name: 'JBL Charge 5', desc: 'Portable Bluetooth Speaker', price: 49.900, icon: '&#128266;', cat: 'Audio' },
+        ];
+
+        var cart = [];
+        var activeCategory = 'All';
+
+        function renderProducts() {
+            var grid = document.getElementById('products-grid');
+            var filtered = activeCategory === 'All' ? PRODUCTS : PRODUCTS.filter(function(p) { return p.cat === activeCategory; });
+            grid.innerHTML = filtered.map(function(p) {
+                return '<div class="product-card">' +
+                    '<div class="product-img">' + p.icon + '</div>' +
+                    '<div class="product-info">' +
+                    '<div class="product-name">' + p.name + '</div>' +
+                    '<div class="product-desc">' + p.desc + '</div>' +
+                    '<div class="product-bottom">' +
+                    '<div class="product-price">' + p.price.toFixed(3) + ' <small>KWD</small></div>' +
+                    '<button class="buy-btn" onclick="addToCart(' + p.id + ')">Add to Cart</button>' +
+                    '</div></div></div>';
+            }).join('');
+        }
+
+        // Category pills
+        document.querySelector('.categories').addEventListener('click', function(e) {
+            if (e.target.classList.contains('cat-pill')) {
+                document.querySelectorAll('.cat-pill').forEach(function(p) { p.classList.remove('active'); });
+                e.target.classList.add('active');
+                activeCategory = e.target.textContent;
+                renderProducts();
+            }
+        });
+
+        function addToCart(id) {
+            var product = PRODUCTS.find(function(p) { return p.id === id; });
+            if (!product) return;
+            var existing = cart.find(function(c) { return c.id === id; });
+            if (existing) { existing.qty++; } else { cart.push({ id: id, name: product.name, price: product.price, icon: product.icon, qty: 1 }); }
+            renderCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(function(c) { return c.id !== id; });
+            renderCart();
+        }
+
+        function getTotal() {
+            return cart.reduce(function(sum, c) { return sum + c.price * c.qty; }, 0);
+        }
+
+        function renderCart() {
+            var badge = document.querySelector('.cart-badge');
+            var totalItems = cart.reduce(function(s, c) { return s + c.qty; }, 0);
+            badge.setAttribute('data-count', totalItems);
+
+            var itemsEl = document.getElementById('cart-items');
+            var totalEl = document.getElementById('cart-total');
+            var btn = document.getElementById('checkout-btn');
+
+            if (cart.length === 0) {
+                itemsEl.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+                btn.disabled = true;
+            } else {
+                itemsEl.innerHTML = cart.map(function(c) {
+                    return '<div class="cart-item">' +
+                        '<span class="cart-item-icon">' + c.icon + '</span>' +
+                        '<div class="cart-item-info"><div class="cart-item-name">' + c.name + (c.qty > 1 ? ' &times;' + c.qty : '') + '</div>' +
+                        '<div class="cart-item-price">' + (c.price * c.qty).toFixed(3) + ' KWD</div></div>' +
+                        '<button class="cart-item-remove" onclick="removeFromCart(' + c.id + ')">&times;</button></div>';
+                }).join('');
+                btn.disabled = false;
+            }
+            totalEl.textContent = getTotal().toFixed(3) + ' KWD';
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-overlay').classList.toggle('open');
+        }
+
+        function checkout() {
+            var baseURL = STORE_CONFIG.baseURL || localStorage.getItem('zam_demo_url');
+            var apiKey = STORE_CONFIG.apiKey || localStorage.getItem('zam_demo_key');
+            if (!apiKey) { alert('Please set the Xcite API key in STORE_CONFIG or on the main demo page.'); return; }
+
+            var total = getTotal();
+            if (total <= 0) return;
+
+            ZamCheckout.configure({ apiKey: apiKey, baseURL: baseURL });
+
+            var orderRef = 'XCITE-' + Date.now();
+            var itemNames = cart.map(function(c) { return c.name; }).join(', ');
+
+            var btn = document.getElementById('checkout-btn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            ZamCheckout.open({
+                amount: total.toFixed(3),
+                orderRef: orderRef,
+                callbackURL: STORE_CONFIG.callbackURL || undefined,
+                note: 'Xcite: ' + itemNames,
+                onSuccess: function(result) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    cart = [];
+                    renderCart();
+                    toggleCart();
+                    var banner = document.getElementById('result');
+                    banner.className = 'result-banner success';
+                    banner.innerHTML = '<div class="inner"><strong>Order Confirmed!</strong> Your order ' + orderRef + ' has been paid successfully.</div>';
+                },
+                onCancel: function() {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                },
+                onError: function(err) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    alert('Payment error: ' + (err.error || 'Something went wrong'));
+                }
+            });
+        }
+
+        renderProducts();
+        renderCart();
+    </script>
+</body>
+</html>
