@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zam Pay Button — Style Guide</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f7;
+      color: #1a1a1a;
+      padding: 40px 24px;
+    }
+    .page { max-width: 900px; margin: 0 auto; }
+
+    h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+    .subtitle { font-size: 16px; color: #888; margin-bottom: 48px; }
+
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .section p { font-size: 14px; color: #888; margin-bottom: 20px; }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      margin-bottom: 24px;
+    }
+    .card--dark { background: #2a2a2a; }
+
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+    .card--dark .label { color: #777; }
+
+    .code-block {
+      background: #1a1a1a;
+      color: #e0e0e0;
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    .code-block .comment { color: #666; }
+    .code-block .string  { color: #F5A623; }
+    .code-block .tag     { color: #6bb3ff; }
+    .code-block .attr    { color: #c792ea; }
+
+    hr { border: none; border-top: 1px solid #e5e5e5; margin: 48px 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <h1>//ZAM Pay Button</h1>
+    <p class="subtitle">Standard payment button for websites and mobile apps — style guide & integration reference</p>
+
+    <!-- ── STYLES ──────────────────────────────────────────── -->
+    <div class="section">
+      <h2>Button Styles</h2>
+      <p>Four style variants to match any checkout design.</p>
+
+      <div class="card">
+        <span class="label">Dark (Default)</span>
+        <div class="row">
+          <div class="zam-pay-button" data-type="pay" data-style="dark"></div>
+        </div>
+      </div>
+
+      <div class="card--dark card">
+        <span class="label">Light</span>
+        <div class="row">
+          <div class="zam-pay-button" data-type="pay" data-style="light"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="label">Outline</span>
+        <div class="row">
+          <div class="zam-pay-button" data-type="pay" data-style="outline"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="label">Orange (Brand)</span>
+        <div class="row">
+          <div class="zam-pay-button" data-type="pay" data-style="orange"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TYPES ───────────────────────────────────────────── -->
+    <div class="section">
+      <h2>Button Types</h2>
+      <p>Different label variants for different checkout contexts.</p>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <span class="label">Pay with</span>
+            <div class="zam-pay-button" data-type="pay" data-style="dark"></div>
+          </div>
+          <div>
+            <span class="label">Buy with</span>
+            <div class="zam-pay-button" data-type="buy" data-style="dark"></div>
+          </div>
+          <div>
+            <span class="label">Check out with</span>
+            <div class="zam-pay-button" data-type="checkout" data-style="dark"></div>
+          </div>
+          <div>
+            <span class="label">Plain (logo only)</span>
+            <div class="zam-pay-button" data-type="plain" data-style="dark"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SIZES ───────────────────────────────────────────── -->
+    <div class="section">
+      <h2>Button Sizes</h2>
+      <p>Three sizes to fit different UI contexts.</p>
+
+      <div class="card">
+        <div class="row" style="align-items: flex-end;">
+          <div>
+            <span class="label">Small (36px)</span>
+            <div class="zam-pay-button" data-type="pay" data-style="dark" data-size="small"></div>
+          </div>
+          <div>
+            <span class="label">Default (48px)</span>
+            <div class="zam-pay-button" data-type="pay" data-style="dark" data-size="default"></div>
+          </div>
+          <div>
+            <span class="label">Large (56px)</span>
+            <div class="zam-pay-button" data-type="pay" data-style="dark" data-size="large"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RTL / ARABIC ────────────────────────────────────── -->
+    <div class="section">
+      <h2>Arabic / RTL Support</h2>
+      <p>Full right-to-left support with Arabic labels.</p>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <span class="label">ادفع بـ (Pay with)</span>
+            <div class="zam-pay-button" data-type="pay" data-style="dark" data-locale="ar"></div>
+          </div>
+          <div>
+            <span class="label">اشتري بـ (Buy with)</span>
+            <div class="zam-pay-button" data-type="buy" data-style="orange" data-locale="ar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATES ──────────────────────────────────────────── -->
+    <div class="section">
+      <h2>Button States</h2>
+      <p>Interactive states: normal, loading, and disabled.</p>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <span class="label">Normal</span>
+            <div id="state-normal"></div>
+          </div>
+          <div>
+            <span class="label">Loading</span>
+            <div id="state-loading"></div>
+          </div>
+          <div>
+            <span class="label">Disabled</span>
+            <div id="state-disabled"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── INTEGRATION ──────────────────────────────────────── -->
+    <div class="section">
+      <h2>Integration</h2>
+
+      <h3 style="font-size:15px; margin-bottom:8px;">HTML (auto-init)</h3>
+      <div class="code-block">
+        <span class="comment">&lt;!-- Include the script --&gt;</span><br>
+        <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"zam-pay-button.js"</span><span class="tag">&gt;&lt;/script&gt;</span><br><br>
+        <span class="comment">&lt;!-- Add a container with data attributes --&gt;</span><br>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"zam-pay-button"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; <span class="attr">data-type</span>=<span class="string">"pay"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; <span class="attr">data-style</span>=<span class="string">"dark"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; <span class="attr">data-size</span>=<span class="string">"default"</span><span class="tag">&gt;&lt;/div&gt;</span>
+      </div>
+
+      <h3 style="font-size:15px; margin: 20px 0 8px;">JavaScript API</h3>
+      <div class="code-block">
+        <span class="comment">// Render programmatically with click handler</span><br>
+        ZamPayButton.render(document.getElementById(<span class="string">'my-btn'</span>), {<br>
+        &nbsp;&nbsp;type: <span class="string">'pay'</span>,<br>
+        &nbsp;&nbsp;style: <span class="string">'dark'</span>,<br>
+        &nbsp;&nbsp;size: <span class="string">'default'</span>,<br>
+        &nbsp;&nbsp;onClick: <span class="comment">function</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;ZamCheckout.open({ amount: <span class="string">'15.500'</span> });<br>
+        &nbsp;&nbsp;}<br>
+        });
+      </div>
+
+      <h3 style="font-size:15px; margin: 20px 0 8px;">CSS Custom Properties</h3>
+      <div class="code-block">
+        <span class="comment">/* Override button dimensions from your stylesheet */</span><br>
+        .zam-pay-btn {<br>
+        &nbsp;&nbsp;--zam-btn-radius: 12px;<br>
+        &nbsp;&nbsp;--zam-btn-min-width: 200px;<br>
+        &nbsp;&nbsp;--zam-btn-height: 48px;<br>
+        }
+      </div>
+    </div>
+
+    <!-- ── COMBINATION WITH CHECKOUT ────────────────────────── -->
+    <div class="section">
+      <h2>Full Checkout Example</h2>
+      <p>Click the button below to see it trigger the Zam Checkout flow.</p>
+
+      <div class="card" style="text-align:center; padding: 48px;">
+        <div style="font-size: 22px; font-weight: 700; margin-bottom: 4px;">Your Total</div>
+        <div style="font-size: 42px; font-weight: 800; margin-bottom: 24px;">15.500 <span style="font-size: 18px; color: #888;">KWD</span></div>
+        <div id="checkout-btn" style="display:inline-block;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="zam-pay-button.js"></script>
+  <script>
+    // Programmatic rendering for states demo
+    ZamPayButton.render(document.getElementById('state-normal'), {
+      type: 'pay', style: 'dark'
+    });
+
+    var loadingBtn = ZamPayButton.render(document.getElementById('state-loading'), {
+      type: 'pay', style: 'dark'
+    });
+    ZamPayButton.setLoading(loadingBtn, true);
+
+    ZamPayButton.render(document.getElementById('state-disabled'), {
+      type: 'pay', style: 'dark', disabled: true
+    });
+
+    // Full checkout demo button
+    ZamPayButton.render(document.getElementById('checkout-btn'), {
+      type: 'pay',
+      style: 'dark',
+      size: 'large',
+      onClick: function () {
+        alert('This would trigger ZamCheckout.open({ amount: "15.500" })');
+      }
+    });
+  </script>
+</body>
+</html>

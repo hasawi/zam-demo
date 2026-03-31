@@ -242,24 +242,8 @@
             font-weight: 700;
             margin-bottom: 16px;
         }
-        .checkout-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #FF8C00, #F5A623);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: opacity .15s;
-        }
-        .checkout-btn:hover { opacity: .9; }
-        .checkout-btn:disabled { opacity: .5; cursor: default; }
+        .checkout-btn-wrap { width: 100%; }
+        .checkout-btn-wrap .zam-pay-btn { width: 100%; min-width: 0; }
         .cart-empty {
             text-align: center;
             padding: 40px 0;
@@ -339,16 +323,14 @@
                     <span>Total</span>
                     <span id="cart-total">0.000 KWD</span>
                 </div>
-                <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>
-                    <svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>
-                    Pay with Zam
-                </button>
+                <div class="checkout-btn-wrap" id="checkout-btn-wrap"></div>
             </div>
         </div>
     </div>
 
     <a href="../index.html" class="back-link">&larr; Back to all stores</a>
 
+    <script src="../zam-pay-button.js"></script>
     <script src="../zam-checkout.js"></script>
     <script>
         // ── Xcite Electronics API Configuration ──
@@ -426,11 +408,10 @@
 
             var itemsEl = document.getElementById('cart-items');
             var totalEl = document.getElementById('cart-total');
-            var btn = document.getElementById('checkout-btn');
 
             if (cart.length === 0) {
                 itemsEl.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
-                btn.disabled = true;
+                if (zamPayBtn) zamPayBtn.disabled = true;
             } else {
                 itemsEl.innerHTML = cart.map(function(c) {
                     return '<div class="cart-item">' +
@@ -439,7 +420,7 @@
                         '<div class="cart-item-price">' + (c.price * c.qty).toFixed(3) + ' KWD</div></div>' +
                         '<button class="cart-item-remove" onclick="removeFromCart(' + c.id + ')">&times;</button></div>';
                 }).join('');
-                btn.disabled = false;
+                if (zamPayBtn) zamPayBtn.disabled = false;
             }
             totalEl.textContent = getTotal().toFixed(3) + ' KWD';
         }
@@ -461,9 +442,7 @@
             var orderRef = 'XCITE-' + Date.now();
             var itemNames = cart.map(function(c) { return c.name; }).join(', ');
 
-            var btn = document.getElementById('checkout-btn');
-            btn.disabled = true;
-            btn.textContent = 'Processing...';
+            ZamPayButton.setLoading(zamPayBtn, true);
 
             ZamCheckout.open({
                 amount: total.toFixed(3),
@@ -471,8 +450,7 @@
                 callbackURL: STORE_CONFIG.callbackURL || undefined,
                 note: 'Xcite: ' + itemNames,
                 onSuccess: function(result) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    ZamPayButton.setLoading(zamPayBtn, false);
                     cart = [];
                     renderCart();
                     toggleCart();
@@ -481,16 +459,20 @@
                     banner.innerHTML = '<div class="inner"><strong>Order Confirmed!</strong> Your order ' + orderRef + ' has been paid successfully.</div>';
                 },
                 onCancel: function() {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    ZamPayButton.setLoading(zamPayBtn, false);
                 },
                 onError: function(err) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 60 40" fill="none"><line x1="6" y1="36" x2="18" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/><line x1="16" y1="36" x2="28" y2="4" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg> Pay with Zam';
+                    ZamPayButton.setLoading(zamPayBtn, false);
                     alert('Payment error: ' + (err.error || 'Something went wrong'));
                 }
             });
         }
+
+        // Initialize Zam Pay button
+        var zamPayBtn = ZamPayButton.render(document.getElementById('checkout-btn-wrap'), {
+            type: 'pay', style: 'dark', disabled: true,
+            onClick: function() { checkout(); }
+        });
 
         renderProducts();
         renderCart();
