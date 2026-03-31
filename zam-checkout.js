@@ -17,6 +17,7 @@
   var config = {
     apiKey: null,
     baseURL: "",
+    currency: "KWD",
     pollInterval: 3000,
   };
 
@@ -193,7 +194,7 @@
       '    <div class="zam-success-title">Payment Successful</div>' +
       '    <div class="zam-success-subtitle">Your transaction has been processed</div>' +
       '    <div class="zam-success-card">' +
-      '      <div class="zam-success-amount-row"><span class="zam-success-amount"></span><span class="zam-success-currency">KWD</span></div>' +
+      '      <div class="zam-success-amount-row"><span class="zam-success-amount"></span><span class="zam-success-currency">' + config.currency + '</span></div>' +
       '      <div class="zam-success-rows"></div>' +
       '    </div>' +
       '    <button class="zam-success-btn">Done</button>' +
@@ -331,6 +332,7 @@
     configure: function (opts) {
       if (opts.apiKey) config.apiKey = opts.apiKey;
       if (opts.baseURL) config.baseURL = opts.baseURL.replace(/\/+$/, "");
+      if (opts.currency) config.currency = opts.currency;
       if (opts.pollInterval) config.pollInterval = opts.pollInterval;
     },
 
